@@ -2,8 +2,7 @@
 
 #define LIS331_H_
 
-#include <SPI.h>
-#include <Arduino.h>
+#include "SPI_Driver.h"
 
 
 #define WHO_AM_I        0x0F
@@ -37,14 +36,7 @@
 #define FS_4g           (1 << 4)
 #define FS_8g           (3 << 4)
 
-
-const byte READ = 0b10000000;     // SCP1000's read command
-const byte WRITE = 0b00000000;   // SCP1000's write command
-
-const int chipSelectPin = 10;
-
-// conversion factor LSB/g divide raw value by this to get acceleration in g's
-float conversion = 1000.0*5.6;
+const int csLIS331 = 10;
 
 // raw data struct
 typedef struct{

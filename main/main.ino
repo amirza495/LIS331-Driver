@@ -6,6 +6,8 @@ void setup() {
   // put your setup code here, to run once:
   LIS331_init();
 
+  Serial.println("Initialization Complete");
+
 }
 
 void loop() {
