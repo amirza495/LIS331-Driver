@@ -1,8 +1,5 @@
 #include "LIS331.h"
 
-const int chipSelectPin = 10;
-
-float conversion = 1000.0*5.6;
 
 //Read from a register over SPI
 unsigned int readRegister(byte thisRegister, int bytesToRead) {
@@ -60,7 +57,6 @@ void writeRegister(byte thisRegister, byte thisValue) {
 unsigned int read_axis(byte reg)
 {
   
-}
   int data = 0;
 
   data = readRegister(reg+1, 1);
@@ -70,8 +66,18 @@ unsigned int read_axis(byte reg)
   return data;
 }
 
+float calibrate_axis(int raw)
+{
+  float value = 0.0;
+
+  value = (float) raw/conversion;
+
+  return value;
+}
+
 void LIS331_init(){
   
+  Serial.begin(115200);
 
   // start the SPI library:
   SPI.begin();
@@ -91,29 +97,21 @@ void LIS331_init(){
 
 }
 
+void LIS331_get_data(LIS331_t *gLIS331Data) {
 
-void LIS331_get_data(LIS331_t gLIS331Data) {
+  // zero raw data inputs
+  gLIS331Data->raw.x = 0;
+  gLIS331Data->raw.y = 0;
+  gLIS331Data->raw.z = 0;
 
-  gLIS331Data.raw.x = 0;
-  gLIS331Data.raw.x = 0;
-  gLIS331Data.raw.x = 0;
-  
-  data_x_raw = read_axis(OUT_X_L);
-  data_x = data_x_raw/conversion;
-  //Serial.print("The x accleration is: ");
-  Serial.print(data_x);
-  Serial.print(",");
+  // read each axis of data
+  gLIS331Data->raw.x = read_axis(OUT_X_L);
+  gLIS331Data->raw.y = read_axis(OUT_Y_L);
+  gLIS331Data->raw.z = read_axis(OUT_Z_L);
 
-  data_y_raw = read_axis(OUT_Y_L);
-  data_y = data_y_raw/conversion;
-  //Serial.print("The y accleration is: ");
-  Serial.print(data_y);
-  Serial.print(",");
-
-  data_z_raw = read_axis(OUT_Z_L);
-  data_z = data_z_raw/conversion;
-  //Serial.print("The z accleration is: ");
-  Serial.print(data_z);
-  Serial.print(",");
+  // convert data from LSB to g
+  gLIS331Data->data.x = convert_axis(gLIS331Data->raw.x);
+  gLIS331Data->data.y = convert_axis(gLIS331Data->raw.y);
+  gLIS331Data->data.z = convert_axis(gLIS331Data->raw.z);
 
 }

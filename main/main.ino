@@ -10,6 +10,20 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  LIS331_get_data(gLIS331Data);
+  LIS331_get_data(&gLIS331Data);
+
+  //Serial.print("The x accleration is: ");
+  Serial.print(gLIS331Data.data.x);
+  Serial.print(",");
+
+  //Serial.print("The y accleration is: ");
+  Serial.print(gLIS331Data.data.y);
+  Serial.print(",");
+  
+  //Serial.print("The z accleration is: ");
+  Serial.print(gLIS331Data.data.z);
+  Serial.print("\r\n");
+
+  delay(10);
 
 }

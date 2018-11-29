@@ -3,6 +3,7 @@
 #define LIS331_H_
 
 #include <SPI.h>
+#include <Arduino.h>
 
 
 #define WHO_AM_I        0x0F
@@ -40,27 +41,36 @@
 const byte READ = 0b10000000;     // SCP1000's read command
 const byte WRITE = 0b00000000;   // SCP1000's write command
 
+const int chipSelectPin = 10;
+
+// conversion factor LSB/g divide raw value by this to get acceleration in g's
+float conversion = 1000.0*5.6;
+
+// raw data struct
 typedef struct{
   int x;
   int y;
   int z;
 }LIS331_raw_data_t;
 
+// calibrated data struct
 typedef struct {
   float x;
   float y;
   float z;
 }LIS331_data_t;
 
+// sensor data struct
 typedef struct{ 
   LIS331_raw_data_t raw;
   LIS331_data_t data;  
 }LIS331_t;
 
-
+// sensor initialization function
 void LIS331_init();
 
-void LIS331_get_data();
+// get data function, returns outputs to global variable
+void LIS331_get_data(LIS331_t *gLIS331Data);
 
 
 #endif
