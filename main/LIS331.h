@@ -4,7 +4,8 @@
 
 #include "SPI_Driver.h"
 
-
+// I gave you guys these for the sake of your sanity
+// its also pretty easy to look all of these things up
 #define WHO_AM_I        0x0F
 
 #define CTRL_REG1       0x20
@@ -36,7 +37,10 @@
 #define FS_4g           (1 << 4)
 #define FS_8g           (3 << 4)
 
+// chip select
 const int csLIS331 = 10;
+
+// I also assumed you could write data structures
 
 // raw data struct
 typedef struct{
@@ -57,6 +61,8 @@ typedef struct{
   LIS331_raw_data_t raw;
   LIS331_data_t data;  
 }LIS331_t;
+
+// the function prototypes are to keep you on the right track
 
 // sensor initialization function
 void LIS331_init();
