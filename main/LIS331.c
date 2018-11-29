@@ -1,8 +1,33 @@
 #include "LIS331.h"
+#include <SPI.h>
 
 const int chipSelectPin = 10;
 
 float conversion = 1000.0*5.6;
+
+
+void LIS331_init(){
+  
+
+  // start the SPI library:
+  SPI.begin();
+
+  SPI.setBitOrder(MSBFIRST);
+
+  // initalize the  chip select pin:
+  pinMode(chipSelectPin, OUTPUT);
+  // give the sensor time to set up:
+  delay(100);
+
+  // config power and mode CTRL_REG1 register
+  writeRegister(CTRL_REG1, PWR_MODE_ON | DATA_RATE_400HZ | Z_AXIS_ENABLE | Y_AXIS_ENABLE | X_AXIS_ENABLE);
+  delay(100);
+
+  // read out CTRL_REG4
+  int test = readRegister(CTRL_REG4, 1);
+  Serial.println(test, BIN);
+
+}
 
 //Read from a register over SPI
 unsigned int readRegister(byte thisRegister, int bytesToRead) {
@@ -70,48 +95,29 @@ unsigned int read_axis(byte reg)
   return data;
 }
 
-void LIS331_init(){
-  
-
-  // start the SPI library:
-  SPI.begin();
-
-  SPI.setBitOrder(MSBFIRST);
-
-  // initalize the  chip select pin:
-  pinMode(chipSelectPin, OUTPUT);
-  // give the sensor time to set up:
-  delay(100);
-
-  writeRegister(CTRL_REG1, PWR_MODE_ON | DATA_RATE_400HZ | Z_AXIS_ENABLE | Y_AXIS_ENABLE | X_AXIS_ENABLE);
-  delay(100);
-
-  int test = readRegister(CTRL_REG4, 1);
-  Serial.println(test, BIN);
-
-}
-
-
 void LIS331_get_data(LIS331_t gLIS331Data) {
 
   gLIS331Data.raw.x = 0;
   gLIS331Data.raw.x = 0;
   gLIS331Data.raw.x = 0;
   
-  data_x_raw = read_axis(OUT_X_L);
+  gLIS331Data.raw.x = read_axis(OUT_X_L);
+  gLIS331Data.raw.y = read_axis(OUT_Y_L);
+  gLIS331Data.raw.z = read_axis(OUT_Z_L);
+
+  
   data_x = data_x_raw/conversion;
+  data_y = data_y_raw/conversion;
+  data_z = data_z_raw/conversion;
+  
   //Serial.print("The x accleration is: ");
   Serial.print(data_x);
   Serial.print(",");
 
-  data_y_raw = read_axis(OUT_Y_L);
-  data_y = data_y_raw/conversion;
   //Serial.print("The y accleration is: ");
   Serial.print(data_y);
   Serial.print(",");
 
-  data_z_raw = read_axis(OUT_Z_L);
-  data_z = data_z_raw/conversion;
   //Serial.print("The z accleration is: ");
   Serial.print(data_z);
   Serial.print(",");
